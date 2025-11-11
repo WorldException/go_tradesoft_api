@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go_tradesoft_api"
 	"log"
+
+	"github.com/WorldException/go_tradesoft_api"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module go_tradesoft_api
+module github.com/WorldException/go_tradesoft_api
 
 go 1.25
 

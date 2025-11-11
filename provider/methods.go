@@ -3,7 +3,8 @@ package provider
 import (
 	"encoding/json"
 	"fmt"
-	"go_tradesoft_api/common"
+
+	"github.com/WorldException/go_tradesoft_api/common"
 
 	"github.com/go-resty/resty/v2"
 )

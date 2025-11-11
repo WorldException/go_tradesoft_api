@@ -1,11 +1,12 @@
 package go_tradesoft_api
 
 import (
-	"go_tradesoft_api/analog"
-	"go_tradesoft_api/info"
-	"go_tradesoft_api/messenger"
-	"go_tradesoft_api/provider"
 	"net/http"
+
+	"github.com/WorldException/go_tradesoft_api/analog"
+	"github.com/WorldException/go_tradesoft_api/info"
+	"github.com/WorldException/go_tradesoft_api/messenger"
+	"github.com/WorldException/go_tradesoft_api/provider"
 
 	"github.com/go-resty/resty/v2"
 )

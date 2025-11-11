@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"go_tradesoft_api/common"
+	"github.com/WorldException/go_tradesoft_api/common"
 )
 
 // ProducerListRequest represents request for producer list
