@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// Создание клиента
-	client := tradesoft.NewClient("https://service.tradesoft.ru/3")
+	client := tradesoft.NewClientDefault()
 
 	// Установка аутентификации
 	client.SetAuth(*username, *password)

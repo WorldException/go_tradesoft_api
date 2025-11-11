@@ -1,6 +1,7 @@
 package tradesoft
 
 import (
+	"net/http"
 	"tradesoft/analog"
 	"tradesoft/info"
 	"tradesoft/messenger"
@@ -31,6 +32,19 @@ func NewClient(baseURL string) *Client {
 		analog:     analog.NewService(httpClient, baseURL),
 		messenger:  messenger.NewService(httpClient, baseURL),
 	}
+}
+
+func NewClientDefault() *Client {
+	return NewClient("https://service.tradesoft.ru/3")
+}
+
+func (c *Client) SetHttpClient(client *http.Client) {
+	restClient := resty.NewWithClient(client)
+	c.httpClient = restClient
+	c.provider = provider.NewService(restClient, c.baseURL)
+	c.info = info.NewService(restClient, c.baseURL)
+	c.analog = analog.NewService(restClient, c.baseURL)
+	c.messenger = messenger.NewService(restClient, c.baseURL)
 }
 
 // SetAuth sets authentication credentials for the client

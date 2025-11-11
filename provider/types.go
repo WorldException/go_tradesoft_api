@@ -420,21 +420,21 @@ type Substate struct {
 
 // SupplierData represents supplier data
 type SupplierData struct {
-	Name              common.ProviderID `json:"name"`
-	Active            bool              `json:"active"`
-	OrderActive       bool              `json:"orderActive"`
-	OrderFeature      bool              `json:"orderFeature"`
-	SyncFeature       bool              `json:"syncFeature"`
-	ActiveTo          *int64            `json:"activeTo,omitempty"`
-	Title             string            `json:"title"`
-	Description       string            `json:"description"`
-	ContractRequired  bool              `json:"contractRequired"`
-	AgreementText     string            `json:"agreementText"`
-	OnlyAgreementText string            `json:"onlyAgreementText"`
-	LoginInfoText     string            `json:"loginInfoText"`
-	SiteUrl           string            `json:"siteUrl"`
-	IconUrl           string            `json:"iconUrl"`
-	GeoIds            []string          `json:"geoIds"`
+	Name              common.ProviderID  `json:"name"`
+	Active            bool               `json:"active"`
+	OrderActive       bool               `json:"orderActive"`
+	OrderFeature      bool               `json:"orderFeature"`
+	SyncFeature       bool               `json:"syncFeature"`
+	ActiveTo          *common.CustomTime `json:"activeTo,omitempty"` // format "04.03.2014"
+	Title             string             `json:"title"`
+	Description       string             `json:"description"`
+	ContractRequired  bool               `json:"contractRequired"`
+	AgreementText     string             `json:"agreementText"`
+	OnlyAgreementText string             `json:"onlyAgreementText"`
+	LoginInfoText     string             `json:"loginInfoText"`
+	SiteUrl           string             `json:"siteUrl"`
+	IconUrl           string             `json:"iconUrl"`
+	GeoIds            []string           `json:"geoIds"`
 }
 
 // GeoDictionaryItem represents geo dictionary item
