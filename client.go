@@ -1,11 +1,11 @@
-package tradesoft
+package go_tradesoft_api
 
 import (
+	"go_tradesoft_api/analog"
+	"go_tradesoft_api/info"
+	"go_tradesoft_api/messenger"
+	"go_tradesoft_api/provider"
 	"net/http"
-	"tradesoft/analog"
-	"tradesoft/info"
-	"tradesoft/messenger"
-	"tradesoft/provider"
 
 	"github.com/go-resty/resty/v2"
 )

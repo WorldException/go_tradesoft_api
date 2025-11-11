@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"tradesoft/common"
+	"go_tradesoft_api/common"
 )
 
 // ProducerListRequest represents request for producer list

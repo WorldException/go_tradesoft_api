@@ -1,4 +1,4 @@
-module tradesoft
+module go_tradesoft_api
 
 go 1.25
 

@@ -1,4 +1,4 @@
-package tradesoft
+package go_tradesoft_api
 
 import (
 	"testing"

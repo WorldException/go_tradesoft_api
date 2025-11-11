@@ -3,9 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"go_tradesoft_api"
 	"log"
-
-	"tradesoft"
 )
 
 func main() {
@@ -24,7 +23,7 @@ func main() {
 	}
 
 	// Создание клиента
-	client := tradesoft.NewClientDefault()
+	client := go_tradesoft_api.NewClientDefault()
 
 	// Установка аутентификации
 	client.SetAuth(*username, *password)
