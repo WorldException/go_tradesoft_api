@@ -1,0 +1,2877 @@
+openapi: 3.0.1
+info:
+  title: Tradesoft service API
+  description: |
+    Documentation: https://service.tradesoft.ru/3/docs (<a href="example.html">Examples of use</a>)
+
+    To use the service, you need an account on the website tradesoft.pro.
+
+    Please, send your questions and suggestions regarding documentation and service operation at <a href="mailto:support@tradesoft.pro">support@tradesoft.pro</a>
+
+  version: 3.1.2
+servers:
+  - url: /3
+tags:
+  - name: Provider
+    description: Supplier service
+  - name: Info
+    description: Part info service
+  - name: Analog
+    description: Interchange service
+  - name: Messenger
+    description: Notification service
+paths:
+  /provider/get-producer-list/:
+    post:
+      tags:
+        - Provider
+      summary: Get a list of manufacturers
+      description: The query returns a list of manufacturers by code.<br/><a href="example.html#get-producer-list">Example</a>.
+      operationId: getProducerList
+      parameters:
+        - name: Cache-Control
+          in: header
+          schema:
+            type: string
+            enum:
+              - no-cache
+              - only-if-cached
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/producerListRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/producerListResponse'
+      x-codegen-request-body-name: getProducerListRequest
+  /provider/get-price-list/:
+    post:
+      tags:
+        - Provider
+      summary: Get a list of offers by manufacturers
+      operationId: getPriceList
+      description: The query returns a list of suggestions by code and manufacturer.<br/><a href="example.html#get-price-list">Example</a>.
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/priceListRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/priceListResponse'
+      x-codegen-request-body-name: getPriceListRequest
+  /provider/get-additional-part-info/:
+    post:
+      tags:
+        - Provider
+      summary: Get additional information about part
+      description: Additional information about the part.<br/> This method can be used to get information about used parts.
+      operationId: getAdditionalPartInfo
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/additionalPartInfoRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/additionalPartInfoResponse'
+      x-codegen-request-body-name: getAdditionalPartInfo      
+  /provider/get-options-list/:
+    post:
+      tags:
+        - Provider
+      summary: Get a list of suppliers' options
+      description: The query returns a list of options available to the provider.<br/><a href="example.html#get-options-list">Example</a>.
+      operationId: getOptionsList
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/optionsListRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/optionsListResponse'
+      x-codegen-request-body-name: getOptionsListRequest
+  /provider/get-provider-list/:
+    post:
+      description: The query returns a list of providers connected to the account.<br/><a href="example.html#get-provider-list">Example</a>.
+      tags:
+        - Provider
+      summary: Get a list of available suppliers
+      operationId: getProviderList
+      parameters:
+        - name: Accept-Language
+          in: header
+          description: Input language
+          schema:
+            type: string
+            default: ru
+            enum:
+              - ru
+              - en
+              - de
+              - pl
+              - bg
+              - ro
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/providerListRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/providerListResponse'
+      x-codegen-request-body-name: getProviderListRequest
+  /provider/pre-order-search/:
+    post:
+      tags:
+        - Provider
+      summary: Get a list of offers by manufacturers
+      description: The query returns a list of items for the order. This method is required to update prices and availability. The method is available only with the Online order service.
+      operationId: preOrderSearch
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/preOrderSearchRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/preOrderSearchResponse'
+      x-codegen-request-body-name: getPriceListRequest
+  /provider/make-order-offline/:
+    post:
+      tags:
+        - Provider
+      summary: Place an order to a supplier
+      description: The method is available only with the Online order service.<br/>Access to this functionality is negotiated additionally with managers<br/>Feature of the method:<br/>The answer comes immediately, but the design itself continues to work on the service side. To clarify the current status of the ordered items, you must call the provider_get_items_status method, which allows you to see the current status of the position.
+      operationId: makeOrderOffline
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/makeOrderOfflineRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/makeOrderOfflineResponse'
+      x-codegen-request-body-name: makeOrderRequest
+  /provider/get-status-list/:
+    post:
+      tags:
+        - Provider
+      summary: Get a list of available statuses
+      description: The method is available only with the Online order service<br/>
+        Important! There are <strong>technical statuses</strong>, created by the Service
+        but not received from the supplier.<br/> <ul> <li>service.created - The item
+        is created in the service, not sent to the supplier's website yet.</li><br/>
+        <li>provider.send_basket - The Service has sent the supplier the request for
+        adding the item in the cart, but has not received the supplier's response.</li><br/>
+        <li>provider.send_order - The Service has sent the supplier the request for
+        item placement, but has not received the supplier's response.</li><br/> <li>provider.basket_done
+        - The Service has received supplier's confirmation about adding the items
+        in the cart. The items are in the cart on the website.</li><br/> <li>provider.order_done
+        - The Service has received supplier's confirmation about order placement,
+        there is an order ID. The items are on the website.</li><br/> <li>service.divided
+        - The condition is assigned for the main status when the Service receives
+        several statuses for the requested item from the supplier.</li> </ul>
+      operationId: getStatusList
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/statusListRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/statusListResponse'
+      x-codegen-request-body-name: statusListRequest
+  /provider/get-items-status/:
+    post:
+      tags:
+        - Provider
+      summary: Get statuses of the ordered items
+      description: The method is available only with the Online order service
+      operationId: getItemsStatus
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/itemsStatusRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/itemsStatusResponse'
+      x-codegen-request-body-name: itemsStatusRequest
+  /info/get-part-info:
+    post:
+      tags:
+        - Info
+      summary: Get part info
+      description: The service is available with Web info<br/>The service limit is
+        <strong>500 000</strong> requests per day
+      operationId: getPartInfo
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/partInfoRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/partInfoResponse'
+      x-codegen-request-body-name: partInfoRequest
+  /info/get-brands-by-article:
+    post:
+      tags:
+        - Info
+      summary: Get a list of brands by part number
+      description: The service is available with Web info<br/>The service limit is
+        <strong>500 000</strong> requests per day
+      operationId: getBrandsByArticle
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/brandsByArticleRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brandsByArticleResponse'
+      x-codegen-request-body-name: brandsByArticleRequest
+  /info/get-brands-by-barcode:
+    post:
+      tags:
+        - Info
+      summary: Get a list of brands by barcode
+      description: The service is available with Web info<br/>The service limit is
+        <strong>500 000</strong> requests per day
+      operationId: getBrandsByBarcode
+      parameters:
+        - name: Accept-Language
+          in: header
+          description: Output language
+          schema:
+            type: string
+            default: ru
+            enum:
+              - ru
+              - en
+              - de
+              - pl
+              - bg
+              - ro
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/brandsByBarcodeRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brandsByBarcodeResponse'
+      x-codegen-request-body-name: brandsByBarcodeRequest
+      deprecated: true
+  /analog/get-analogs:
+    post:
+      tags:
+        - Analog
+      summary: Get a list of interchanges by part number and brand
+      description: The service is available with the Online interchanges service
+      operationId: getAnalogs
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/analogsRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analogsResponse'
+      x-codegen-request-body-name: analogsRequest
+  /analog/get-analogs-adv:
+    post:
+      tags:
+        - Analog
+      summary: Get a list of interchanges by part number and brand
+      description: The service is available with the Online interchanges service
+      operationId: getAnalogsAdv
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/analogsAdvRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/analogsAdvResponse'
+      x-codegen-request-body-name: analogsAdvRequest
+  /analog/get-producers-adv:
+    post:
+      tags:
+        - Analog
+      summary: Get a list of available manufacturers by part number
+      description: The service is available with the Online interchanges service
+      operationId: getProducersAdv
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/producersAdvRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/producersAdvResponse'
+      x-codegen-request-body-name: producersAdvRequest
+  /messenger/send-sms:
+    post:
+      tags:
+        - Messenger
+      summary: Send an SMS to a mobile number
+      description: Send an SMS to a mobile number
+      operationId: sendSms
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/sendSmsRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sendSmsResponse'
+      x-codegen-request-body-name: sendSmsRequest
+  /messenger/get-sms-status:
+    post:
+      tags:
+        - Messenger
+      summary: Get information about sent SMS
+      description: Get information about sent SMS
+      operationId: getSmsStatus
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/smsStatusRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/smsStatusResponse'
+      x-codegen-request-body-name: smsStatusRequest
+  /messenger/get-sms-balance:
+    post:
+      tags:
+        - Messenger
+      summary: Check SMS balance
+      description: Check SMS balance
+      operationId: getSmsBalance
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/smsBalanceRequest'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/smsBalanceResponse'
+      deprecated: true
+      x-codegen-request-body-name: smsBalanceRequest
+  /messenger/get-sms-balance2:
+    post:
+      tags:
+        - Messenger
+      summary: Check SMS balance
+      description: Check SMS balance
+      operationId: getSmsBalance2
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/smsBalance2Request'
+        required: false
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/smsBalance2Response'
+      x-codegen-request-body-name: smsBalance2Request
+components:
+  schemas:
+    providerCode:
+      title: Code in supplier system
+      type: string
+      description: Part id on the supplier's website (can be obtained by method getPriceList)
+      example: OC90OF
+    supplierData:
+      type: object
+      title: Supplier data
+      properties:
+        name:
+          $ref: '#/components/schemas/providerId'
+        active:
+          type: boolean
+          description: Price search service is available for usage (connected)
+        orderActive:
+          type: boolean
+          description: Online order service is available for usage (connected)
+        orderFeature:
+          type: boolean
+          description: The supplier supports the Online order functions
+        syncFeature:
+          type: boolean
+          description: The supplier supports the function of status synchronization
+        activeTo:
+          type: integer
+          description: The service is enabled till. If the value is "null",
+                  the service is available with no time limit.
+          format: unixtime
+          nullable: true
+          example: null
+        title:
+          type: string
+          description: Supplier's name
+        description:
+          type: string
+          description: The text of the supplier's description
+        contractRequired:
+          type: boolean
+          description: To connect a supplier, approval for access is required
+        agreementText:
+          type: string
+          description: The text for approval with the supplier
+        onlyAgreementText:
+          type: string
+          description: The text for approval with the supplier (without conditions
+                  of login/password entering)
+        loginInfoText:
+          type: string
+          description: Rules for entering the login/password to the supplier's
+                  service
+        siteUrl:
+          type: string
+          description: The link to the supplier's website
+        iconUrl:
+          type: string
+          description: Link to website icon
+        geoIds:
+          type: array
+          description: IDs of the regions where the supplier refers to
+          example:
+            - eu
+            - eu.ru
+            - eu.ru.kir
+            - eu.ru.kir.kirov
+          items:
+            type: string
+            example: eu.ru.kir.kirov
+    geoDictionaryItem:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The ID geoId
+          example: eu.ru
+        name:
+          type: string
+          description: Element name
+          example: Russia
+        type:
+          type: string
+          description: ID type
+          example: country
+          enum:
+            - continent
+            - country
+            - subdivision1
+            - subdivision2
+    itemId:
+      title: Item id
+      type: string
+      description: The unique part ID from the preliminary price search, necessary for the order placement (id is returned by the PreOrderSearch method)
+      example: 50ae6272d7dd871411000000
+    orderItemId:
+      title: Order item id
+      type: string
+      description: Internal ID of the item for upcoming item synchronization
+      example: 50ae6272d7dd87141100878787
+    requestError:
+      title: Request error
+      type: string
+      description: Request error
+    itemHash:
+      title: Item hash
+      type: string
+      example: 526cacebbf8ab114c887f6a965782cf0
+      description: Position key obtained by the GetPriceList method. Allows you to filter the search result, if the value is null, then all positions by manufacturer code will be returned.
+    time:
+      title: Time
+      type: number
+      description: Request processing time
+      format: float
+      example: 0.267
+    cache:
+      title: Cache
+      maximum: 1
+      minimum: 0
+      type: integer
+      description: The request result is taken from the cache (0 - data received from the provider, 1 - data received from the service cache)
+    timelimit:
+      title: Time limit
+      type: integer
+      description: Time limit in seconds to receive data from the provider.
+      default: 10
+      maximum: 50
+      minimum: 10
+    providerId:
+      title: Supplier ID
+      type: string
+      example: "provider_id_test"
+      description: Supplier ID (can be obtained from the list of available providers - GetProviderList)
+    options:
+      title: Provider options
+      type: object
+      description: Optional parameter. Some providers have additional search options, information can be found in the available provider options section (GetOptionsList).
+      properties:
+        key:
+          type: string
+          description: Option key
+      example:
+        key1: value1
+        key2: value2
+    itemsStatusRequest:
+      title: itemsStatusRequest
+      required:
+        - action
+        - container
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+          example: test
+        password:
+          type: string
+          description: Password on TradeSoft website
+          format: password
+          example: 123
+        service:
+          type: string
+          description: Service
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: getItemsStatus
+        timelimit:
+          $ref: '#/components/schemas/timelimit'
+        container:
+          type: array
+          description: Requests to suppliers
+          items:
+            required:
+              - items
+              - login
+              - password
+              - provider
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                description: Login on the supplier's website
+                example: user
+              password:
+                type: string
+                description: Password on the supplier's website
+                example: 456
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/orderItemId'
+              options:
+                $ref: '#/components/schemas/options'
+    itemsStatusResponse:
+      title: itemsStatusResponse
+      required:
+        - container
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          $ref: '#/components/schemas/time'
+        container:
+          type: array
+          items:
+            required:
+              - error
+              - provider
+              - time
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              error:
+                type: string
+                description: Error of the supplier's request
+              items:
+                type: object
+                additionalProperties:
+                  required:
+                    - currencycode
+                    - error
+                    - price
+                    - providerId
+                    - providerItemId
+                    - providerOrderNumber
+                    - quantity
+                    - stateId
+                    - stateName
+                  type: object
+                  properties:
+                    providerItemId:
+                      $ref: '#/components/schemas/orderItemId'
+                    providerOrderNumber:
+                      type: string
+                      description: Supplier's order ID
+                      example: K1-222/505
+                    providerId:
+                      type: string
+                      description: Item ID of the supplier
+                    quantity:
+                      minimum: 1
+                      type: integer
+                      description: Quantity of parts
+                      example: 1
+                    stateId:
+                      type: string
+                      description: Status ID
+                      example: "21"
+                    stateName:
+                      type: string
+                      description: Status name
+                      example: The order is placed
+                    price:
+                      type: number
+                      description: Part price (Per 1 pc.)
+                      format: float
+                    currencycode:
+                      type: string
+                      description: Currency code
+                      example: RUB
+                    code:
+                      type: string
+                      description: Part number
+                      example: KL9
+                    brand:
+                      type: string
+                      description: Brand name of the product
+                      example: Mahle
+                    substates:
+                      type: array
+                      description: Sub-statuses of the item. This array is displayed
+                        if the main item is divided in several pieces<br/> The main
+                        status is assigned to the ID "service.divided
+                      items:
+                        type: object
+                        properties:
+                          innerId:
+                            type: string
+                            description: Internal ID of the item. It can be null
+                            nullable: true
+                          quantity:
+                            minimum: 1
+                            type: integer
+                            description: Quantity of parts
+                            example: 1
+                          stateId:
+                            type: string
+                            description: Status ID
+                            example: "9"
+                          stateName:
+                            type: string
+                            description: Status name
+                            example: Refusal
+                    error:
+                      type: string
+                      description: Item error
+              time:
+                $ref: '#/components/schemas/time'
+            description: Result of the request to the supplier
+    statusListRequest:
+      title: statusListRequest
+      required:
+        - action
+        - container
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: getStatusList
+        container:
+          type: array
+          description: Requests to suppliers
+          items:
+            required:
+              - login
+              - password
+              - provider
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                description: Login on the supplier's website
+              password:
+                type: string
+                description: Password on the supplier's website
+    statusListResponse:
+      title: statusListResponse
+      required:
+        - container
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          $ref: '#/components/schemas/time'
+        container:
+          type: array
+          items:
+            required:
+              - error
+              - provider
+              - time
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              error:
+                type: string
+                description: Error of the supplier's request
+              statusList:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: Status ID
+                      example: "21"
+                    name:
+                      type: string
+                      description: Status name
+                      example: The order is placed
+              time:
+                $ref: '#/components/schemas/time'
+            description: Result of the request to the supplier
+    makeOrderOfflineRequest:
+      title: makeOrderOfflineRequest
+      required:
+        - action
+        - param
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password on TradeSoft website
+          format: password
+        service:
+          type: string
+          description: Service
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: makeOrderOffline
+        timelimit:
+          $ref: '#/components/schemas/timelimit'
+        param:
+          type: array
+          description: Requests to suppliers
+          items:
+            required:
+              - items
+              - login
+              - password
+              - provider
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                description: Login on the supplier's website
+                example: test
+              password:
+                type: string
+                description: Password on the supplier's website
+                example: test
+              comment:
+                type: string
+                description: Comments to the order
+                example: Test order
+              clientOrderNumber:
+                type: string
+                description: Client's order ID
+                example: ЗП-010203
+              items:
+                type: array
+                description: The list of the ordered items
+                items:
+                  required:
+                    - itemId
+                    - quantity
+                  type: object
+                  properties:
+                    itemId:
+                      $ref: '#/components/schemas/itemId'
+                    quantity:
+                      minimum: 1
+                      type: integer
+                      description: Quantity of the ordered part
+                      example: 1
+                    reference:
+                      type: string
+                      description: Item Ref No (Position ID in your program)
+                    comment:
+                      type: string
+                      description: Comments to the item
+                      example: Test order
+              options:
+                $ref: '#/components/schemas/options'
+    makeOrderOfflineResponse:
+      title: makeOrderOfflineResponse
+      required:
+        - error
+        - result
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          $ref: '#/components/schemas/time'
+        result:
+          type: object
+          description: Result of the request to the supplier
+          required:
+            - items
+            - orderStatus
+            - provider
+            - time
+          properties:
+            provider:
+              $ref: '#/components/schemas/providerId'
+            orderStatus:
+              type: string
+              description: The order status <br/> MakeOrderProgress - the order is
+                sent for placement <br/> MakeOrderError - the order is not created
+              enum:
+                - MakeOrderProgress
+                - MakeOrderError
+            time:
+              $ref: '#/components/schemas/time'
+            items:
+              type: array
+              description: The list of the ordered parts
+              items:
+                required:
+                  - error
+                  - itemId
+                  - orderItemId
+                type: object
+                properties:
+                  itemId:
+                    $ref: '#/components/schemas/itemId'
+                  orderItemId:
+                    $ref: '#/components/schemas/orderItemId'
+                  error:
+                    type: string
+                    description: The text of the item error in case of the failed
+                      order
+    makeOrderRequest:
+      title: makeOrderRequest
+      required:
+        - action
+        - container
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: makeOrder
+        container:
+          type: array
+          description: Bucket of requests to suppliers
+          items:
+            required:
+              - items
+              - login
+              - password
+              - provider
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                description: Login on the supplier's website
+              password:
+                type: string
+                description: Password on the supplier's website
+              comment:
+                type: string
+                description: Comments to the order
+                example: Test order
+              clientOrderNumber:
+                type: string
+                description: Client's order ID
+                example: ЗП-010203
+              items:
+                type: array
+                description: The list of the ordered parts
+                items:
+                  required:
+                    - itemId
+                    - quantity
+                  type: object
+                  properties:
+                    itemId:
+                      $ref: '#/components/schemas/itemId'
+                    quantity:
+                      minimum: 1
+                      type: integer
+                      description: Quantity of the ordered part
+                      example: 1
+                    reference:
+                      type: string
+                      description: Item Ref No
+                    comment:
+                      type: string
+                      description: Comments to the item
+              options:
+                $ref: '#/components/schemas/options'
+    providerListRequest:
+      title: providerListRequest
+      required:
+        - action
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password on TradeSoft website
+          format: password
+        service:
+          type: string
+          description: Service
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: getProviderList
+    providerListResponse:
+      title: providerListResponse
+      required:
+        - data
+        - error
+        - geoDictionary
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          $ref: '#/components/schemas/time'
+        data:
+          type: array
+          description: Response data
+          items:
+            $ref: '#/components/schemas/supplierData'
+        geoDictionary:
+          type: array
+          description: data about geo translations
+          items:
+            $ref: '#/components/schemas/geoDictionaryItem'
+    optionsListRequest:
+      title: optionListRequest
+      required:
+        - action
+        - container
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password on TradeSoft website
+          format: password
+        service:
+          type: string
+          description: Service
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: getOptionsList
+        container:
+          type: array
+          description: Bucket of requests to suppliers
+          items:
+            required:
+              - login
+              - password
+              - provider
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                description: Login on the supplier's website
+              password:
+                type: string
+                description: Password on the supplier's website
+    optionsListResponse:
+      title: GetOptionsListResponse
+      required:
+        - container
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          $ref: '#/components/schemas/time'
+        container:
+          type: array
+          items:
+            required:
+              - cache
+              - data
+              - makeOrder
+              - makeOrderDescriptionUrl
+              - provider
+              - time
+            type: object
+            properties:
+              cache:
+                $ref: '#/components/schemas/cache'
+              provider:
+                $ref: '#/components/schemas/providerId'
+              time:
+                $ref: '#/components/schemas/time'
+              makeOrder:
+                type: string
+                description: It shows the final result of the method makeOrder<br/>
+                  full - complete the order placement<br/> basket - the product will
+                  be only in the cart<br/> none - order placement is not supported
+                enum:
+                  - full
+                  - basket
+                  - none
+              makeOrderDescriptionUrl:
+                type: string
+                description: The link to the cart or the list of orders on the supplier's
+                  website, it depends on the supplier
+                format: url
+              data:
+                type: array
+                items:
+                  required:
+                    - default
+                    - options
+                    - title
+                    - type
+                    - sortIndex
+                    - description
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: delivery
+                      description: Option text identifier
+                    title:
+                      type: string
+                      description: The text with the option name
+                      example: Search for replacements/interchanges
+                    type:
+                      type: string
+                      description: Option type. <br/>select - selection from data<br/>edit
+                        - random option with the entry field
+                      enum:
+                        - select
+                        - edit
+                    multiple:
+                      type: boolean
+                      description: A possibility to select several values of the set
+                        option. It is applicable only to the option type "select"
+                    options:
+                      type: array
+                      description: The list of possible option values (from GetOptionsList)
+                      example:
+                        Y: true
+                        N: false
+                      items:
+                        type: string
+                    default:
+                      type: string
+                      description: Default value
+                      example: Y
+                    sortIndex:
+                      type: integer
+                      description: Option display priority
+                      example: 1
+                    description:
+                      type: string
+                      description: Additional option description
+                      example: Additional option description
+          description: Bucket of responses from suppliers
+    producerListRequest:
+      title: producerListRequest
+      required:
+        - action
+        - container
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+          example: "test"
+        password:
+          type: string
+          description: Password on TradeSoft website
+          format: password
+          example: "test"
+        service:
+          type: string
+          description: The name of the service to which the request will be sent.
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: getProducerList
+        timelimit:
+          $ref: '#/components/schemas/timelimit'
+        container:
+          type: array
+          description: Bucket of requests to suppliers
+          items:
+            required:
+              - code
+              - login
+              - password
+              - provider
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                example: "test"
+                description: Login on the supplier's website
+              password:
+                type: string
+                example: "test"
+                description: Password on the supplier's website
+              code:
+                type: string
+                example: "kl9"
+                description: Part number
+              options:
+                $ref: '#/components/schemas/options'
+    producerListResponse:
+      title: GetProducerListResponse
+      required:
+        - container
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          $ref: '#/components/schemas/time'
+        container:
+          type: array
+          description: Bucket of responses from suppliers
+          items:
+            type: object
+            properties:
+              cache:
+                $ref: '#/components/schemas/cache'
+              provider:
+                $ref: '#/components/schemas/providerId'
+              time:
+                $ref: '#/components/schemas/time'
+              data:
+                type: array
+                description: Manufacturer search results by code
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      description: Part number
+                      example: KL9
+                    producer:
+                      type: string
+                      description: Manufacturer
+                      example: KNECHT/MAHLE
+                    caption:
+                      type: string
+                      description: Part name
+                      example: "Fuel filter"
+            
+    preOrderSearchRequest:
+      title: preOrderSearchRequest
+      required:
+        - action
+        - container
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+          example: test
+        password:
+          type: string
+          description: Password on TradeSoft website
+          format: password
+          example: 123456
+        service:
+          type: string
+          description: Service
+          default: provider
+        timelimit:
+          $ref: '#/components/schemas/timelimit'
+        action:
+          type: string
+          description: Action
+          default: preOrderSearch
+        container:
+          type: array
+          description: Bucket of requests to suppliers
+          items:
+            required:
+              - code
+              - login
+              - password
+              - producer
+              - provider
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                description: Login on the supplier's website
+                example: user
+              password:
+                type: string
+                description: Password on the supplier's website
+                example: 34567
+              code:
+                type: string
+                description: Part number
+                example: kl9
+              producer:
+                type: string
+                description: Manufacturer
+                example: MAHLE
+              itemHash:
+                $ref: '#/components/schemas/itemHash'
+              options:
+                $ref: '#/components/schemas/options'
+    preOrderSearchResponse:
+      title: preOrderSearchResponse
+      required:
+        - container
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          $ref: '#/components/schemas/time'
+        container:
+          type: array
+          description: Bucket of responses from suppliers
+          items:
+            type: object
+            properties:
+              cache:
+                $ref: '#/components/schemas/cache'
+              provider:
+                $ref: '#/components/schemas/providerId'
+              time:
+                $ref: '#/components/schemas/time'
+              items:
+                type: array
+                items:
+                  required:
+                    - caption
+                    - code
+                    - currencycode
+                    - deliverydays
+                    - deliverydays_max
+                    - deliverydays_min
+                    - itemId
+                    - price
+                    - producer
+                    - rest
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      description: Part number
+                      example: KL9
+                    producer:
+                      type: string
+                      description: Manufacturer
+                      example: MAHLE
+                    price:
+                      type: number
+                      description: Price
+                      format: float
+                      example: 99.9
+                    currencycode:
+                      type: string
+                      description: Currency code
+                      example: RUB
+                    caption:
+                      type: string
+                      description: Part name
+                      example: Fuel filter
+                    rest:
+                      type: string
+                      example: 424
+                      description: Stock balance (Available in the retail outlet)
+                    deliverydays:
+                      type: string
+                      description: Delivery time, days
+                      example: 4-7
+                    deliverydays_min:
+                      type: integer
+                      description: Minimum delivery time
+                      example: 4
+                    deliverydays_max:
+                      type: integer
+                      description: Maximum delivery time
+                      example: 7
+                    direction:
+                      type: string
+                      description: Delivery direction
+                      example: MSK-115
+                    updated:
+                      type: integer
+                      description: Update time unixtime
+                      example: 1307434715
+                    minquantity:
+                      type: integer
+                      description: Minimum batch
+                    amount:
+                      type: integer
+                      description: Quantity of products in a package
+                    provider_rating:
+                      maximum: 1E+2
+                      minimum: 0
+                      type: integer
+                      description: Supplier rating
+                    war_provider_rating:
+                      maximum: 5
+                      minimum: 1
+                      type: integer
+                      description: Supplier rating in WebAutoResource format
+                    providercode:
+                      $ref: '#/components/schemas/providerCode'
+                    weight:
+                      type: integer
+                      description: Weight in kg
+                      format: float
+                    itemtype:
+                      type: string
+                      description: Part type
+                      enum:
+                        - none
+                        - original
+                        - analog
+                        - replace
+                    itemHash:
+                      $ref: '#/components/schemas/itemHash'
+                    delivery:
+                      type: string
+                      description: Delivery information. This is a text about the
+                        delivery type/conditions.
+                      example: Shipment after 15:00 on the day of the order
+                    delivery_cost:
+                      type: integer
+                      description: Delivery price
+                      format: float
+                    delivery_currency:
+                      type: string
+                      description: Delivery currency code
+                      example: RUB
+                    itemId:
+                      $ref: '#/components/schemas/itemId'
+                    return:
+                      type: string
+                      description: Is return available?
+                      enum:
+                        - possible
+                        - limited
+                        - impossible
+                    return_info:
+                      type: string
+                      description: Return conditions
+                      example: Return conditions
+                    isDealer:
+                      type: boolean
+                      description: The flag of the official brand dealer
+                      example: true
+                    isUsed:
+                      type: boolean
+                      description: The flag of the part is used
+                      example: true
+                    image:
+                      type: string
+                      description: The link to the part image
+                      example: https://www.tradesoft.ru/bitrix/templates/tradesoft/images/logo/header_ru.png
+    priceListRequest:
+      title: priceListRequest
+      required:
+        - action
+        - container
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+          example: "test"
+        password:
+          type: string
+          description: Password on TradeSoft website
+          format: password
+          example: "123456"
+        service:
+          type: string
+          description: Service
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: getPriceList
+        timelimit:
+          $ref: '#/components/schemas/timelimit'
+        container:
+          type: array
+          description: Bucket of requests to suppliers
+          items:
+            required:
+              - code
+              - login
+              - password
+              - producer
+              - provider
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                description: Login on the supplier's website
+                example: "test"
+              password:
+                type: string
+                description: Password on the supplier's website
+                example: "test"
+              code:
+                type: string
+                description: Part number
+                example: "kl9"
+              producer:
+                type: string
+                description: Manufacturer
+                example: "KNECHT/MAHLE"
+              options:
+                $ref: '#/components/schemas/options'
+    priceListResponse:
+      title: GetPriceListResponse
+      required:
+        - container
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          $ref: '#/components/schemas/time'
+        container:
+          type: array
+          items:
+            type: object
+            properties:
+              cache:
+                $ref: '#/components/schemas/cache'
+              provider:
+                $ref: '#/components/schemas/providerId'
+              time:
+                $ref: '#/components/schemas/time'
+              data:
+                type: array
+                items:
+                  required:
+                    - caption
+                    - code
+                    - currencycode
+                    - deliverydays
+                    - deliverydays_max
+                    - deliverydays_min
+                    - price
+                    - producer
+                    - rest
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      description: Part number
+                      example: KL9
+                    producer:
+                      type: string
+                      description: Manufacturer
+                      example: MAHLE
+                    price:
+                      type: number
+                      description: Price
+                      format: float
+                      example: 99.9
+                    currencycode:
+                      type: string
+                      description: Currency code
+                      example: RUB
+                    caption:
+                      type: string
+                      description: Part name
+                      example: Fuel filter
+                    rest:
+                      type: string
+                      example: "50"
+                      description: Stock balance (Available in the retail outlet)
+                    deliverydays:
+                      type: string
+                      description: Delivery time, days
+                      example: 4-7
+                    deliverydays_min:
+                      type: integer
+                      description: Minimum delivery time
+                      example: 4
+                    deliverydays_max:
+                      type: integer
+                      description: Maximum delivery time
+                      example: 7
+                    direction:
+                      type: string
+                      description: Delivery direction
+                      example: MSK-115
+                    updated:
+                      type: integer
+                      description: Update time unixtime
+                      example: 1307434715
+                    minquantity:
+                      type: integer
+                      description: Minimum batch
+                    amount:
+                      type: integer
+                      description: Quantity of products in a package
+                    provider_rating:
+                      maximum: 1E+2
+                      minimum: 0
+                      type: integer
+                      description: Supplier rating
+                    war_provider_rating:
+                      maximum: 5
+                      minimum: 1
+                      type: integer
+                      description: Supplier rating in WebAutoResource format
+                    providercode:
+                      $ref: '#/components/schemas/providerCode'
+                    weight:
+                      type: integer
+                      description: Weight in kg
+                      format: float
+                      example: 0.5
+                    itemtype:
+                      type: string
+                      description: Part type
+                      enum:
+                        - none
+                        - original
+                        - analog
+                        - replace
+                    itemHash:
+                      $ref: '#/components/schemas/itemHash'
+                    delivery:
+                      type: string
+                      description: Delivery information. This is a text about the
+                        delivery type/conditions.
+                      example: Shipment after 15:00 on the day of the order
+                    delivery_cost:
+                      type: integer
+                      description: Delivery price
+                      format: float
+                    delivery_currency:
+                      type: string
+                      description: Delivery currency code
+                      example: RUB
+                    return:
+                      type: string
+                      description: Is return available?
+                      enum:
+                        - possible
+                        - limited
+                        - impossible
+                    return_info:
+                      type: string
+                      description: Return conditions
+                      example: Return conditions
+                    isDealer:
+                      type: boolean
+                      description: The flag of the official brand dealer
+                      example: true
+                    isUsed:
+                      type: boolean
+                      description: The flag of the part is used
+                      example: true
+                    image:
+                      type: string
+                      description: The link to the part image
+                      example: https://www.tradesoft.ru/bitrix/templates/tradesoft/images/logo/header_ru.png
+          description: Bucket of responses from suppliers
+    additionalPartInfoRequest:
+      title: additionalPartInfoRequest
+      required:
+        - action
+        - container
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: provider
+        action:
+          type: string
+          description: Action
+          default: getAdditionalPartInfo
+        container:
+          type: array
+          description: Bucket of requests to suppliers
+          items:
+            required:
+              - providerCode
+              - login
+              - password
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              login:
+                type: string
+                description: Login on the supplier's website
+              password:
+                type: string
+                description: Password on the supplier's website
+              providerCode:
+                $ref: '#/components/schemas/providerCode'
+    additionalPartInfoResponse:
+      title: GetSdditionalPartInfoResponse
+      required:
+        - container
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/requestError'
+        time:
+          type: integer
+          description: Request processing time
+          format: float,
+        container:
+          type: array
+          items:
+            type: object
+            properties:
+              provider:
+                $ref: '#/components/schemas/providerId'
+              time:
+                $ref: '#/components/schemas/time'
+              providerCode:
+                $ref: '#/components/schemas/providerCode'
+              name:
+                type: string
+                description: Part name
+                example: Bumper
+              images:
+                type: array
+                description: Array of URLs to part images
+                items:
+                  nullable: true
+              description:
+                type: string
+                description: part description
+                example: Bumper with a scratch in the upper right corner
+          description: Bucket of responses from suppliers  
+    producersAdvRequest:
+      title: producersAdvRequest
+      required:
+        - action
+        - data
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: analog
+        action:
+          type: string
+          description: Action
+          default: getProducersAdv
+        rating:
+          maximum: 5
+          minimum: 1
+          type: integer
+          description: Minimum rating to display an interchange. The higher the rating
+            is, the better the search results are
+          example: 3
+        data:
+          type: array
+          description: Searched part numbers
+          items:
+            type: string
+            description: Part number
+            example: "0356150003"
+    producersAdvResponse:
+      title: producersAdvResponse
+      required:
+        - data
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        data:
+          type: object
+          properties:
+            articleBrand:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Part name
+                  example: Fuel filter
+                rating:
+                  maximum: 5
+                  minimum: 1
+                  type: integer
+                  description: Brand rating
+                  example: 3
+              description: Results by part number and brand connected via ":"
+          description: Request result. It can be null in case of no result
+          nullable: true
+          example:
+            0356150003:BOSCH:
+              rating: 2
+              name: Fuel filter
+            0356150003:GM:
+              rating: 1
+              name: Oil filter
+    analogsAdvRequest:
+      title: analogsAdvRequest
+      required:
+        - action
+        - data
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: analog
+        action:
+          type: string
+          description: Action
+          default: getAnalogsAdv
+        rating:
+          maximum: 5
+          minimum: 1
+          type: integer
+          description: Minimum rating to display an interchange. The higher the rating
+            is, the better the search results are
+          example: 3
+        lng:
+          type: string
+          description: The list of output languages, in order of priority
+          example: ru,en
+          default: ru
+          enum:
+            - ru
+            - en
+            - pl
+        data:
+          type: array
+          description: Searched interchanges
+          items:
+            type: string
+            description: The line including the part number and brand separated by
+              ":"
+            example: 0356150003:BOSCH
+    analogsAdvResponse:
+      title: analogsAdvResponse
+      required:
+        - data
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        data:
+          type: object
+          properties:
+            articleBrand:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Part number
+                  example: KL9
+                brand:
+                  type: string
+                  description: Brand
+                analogs:
+                  type: array
+                  description: Interchanges
+                  items:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Part number
+                        example: N00310
+                      brand:
+                        type: string
+                        description: Brand
+                        example: MAHLE KNECHT
+                      name:
+                        type: string
+                        description: Part name
+                        example: Fuel filter
+                      rating:
+                        maximum: 5
+                        minimum: 1
+                        type: integer
+                        description: Interchange rating
+                        example: 3
+                    description: Interchanges for the searched part number and brand
+              description: Results by part number and brand connected via ":"
+              example:
+                code: 0356150003:BOSCH
+                brand: BOSCH
+                analogs:
+                  - - N00310
+                    - MAHLE KNECHT
+                    - 2
+                    - Fuel filter
+          description: Request result. It can be null in case of no result
+          nullable: true
+          example:
+            0356150003:BOSCH:
+              code: "0356150003"
+              brand: BOSCH
+              analogs:
+                - code: N00310
+                  brand: MAHLE KNECHT
+                  name: Fuel filter
+                  rating: 2
+    analogsRequest:
+      title: analogsRequest
+      required:
+        - action
+        - data
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Password
+          default: analog
+        action:
+          type: string
+          description: Action
+          default: getAnalogs
+        rating:
+          maximum: 5
+          minimum: 1
+          type: integer
+          description: Minimum rating to display an interchange. The higher the rating
+            is, the better the search results are
+          example: 3
+        lng:
+          type: string
+          description: The list of output languages, in order of priority
+          example: ru,en
+          default: ru
+          enum:
+            - ru
+            - en
+            - pl
+        data:
+          type: array
+          description: Searched interchanges
+          example:
+            - - KL9
+              - MAHLE
+            - - OC47
+              - KNECHT
+          items:
+            type: array
+            description: 'The pair: Part number + Brand'
+            example:
+              - "0356150003"
+              - BOSCH
+            items:
+              type: string
+    analogsResponse:
+      title: analogsResponse
+      required:
+        - data
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        data:
+          type: object
+          properties:
+            article:
+              type: object
+              properties:
+                brand:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      description: Part number
+                      example: KL9
+                    brand:
+                      type: string
+                      description: Brand
+                    analogs:
+                      type: array
+                      description: Interchanges
+                      items:
+                        type: array
+                        description: Array of the values - Part number, Brand, Rating,
+                          Part name
+                        example:
+                          - N00310
+                          - MAHLE KNECHT
+                          - 2
+                          - Fuel filter
+                        items:
+                          type: string
+                  description: Results by brand
+              description: Results by part number
+              example:
+                BOSCH:
+                  code: "0356150003"
+                  brand: BOSCH
+                  analogs:
+                    - - N00310
+                      - MAHLE KNECHT
+                      - 2
+                      - Fuel filter
+          description: Request result. It can be null in case of no resul
+          nullable: true
+          example:
+            KL9:
+              BOSCH:
+                code: "0356150003"
+                brand: BOSCH
+                analogs:
+                  - - N00310
+                    - MAHLE KNECHT
+                    - 2
+                    - Fuel filter
+    brandsByArticleRequest:
+      title: brandsByArticle
+      required:
+        - action
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          example: info
+          default: info
+        action:
+          type: string
+          description: Action
+          example: getBrandsByArticle
+          default: getBrandsByArticle
+        param:
+          required:
+            - code
+          type: object
+          properties:
+            code:
+              type: string
+              description: Part number
+              example: 5310-41430
+            lang:
+              type: string
+              description: Output language
+              example: ru
+              enum:
+                - ru
+                - en
+                - pl
+    brandsByArticleResponse:
+      title: brandsByArticleResponse
+      required:
+        - error
+        - result
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        result:
+          type: array
+          description: Request result. It can be null in case of no result
+          nullable: true
+          items:
+            type: object
+            properties:
+              brand:
+                type: string
+                description: Brand
+                example: INA
+              name:
+                type: string
+                description: Part name
+                example: Generator
+            example:
+              - name: Generator
+                brand: INA
+    brandsByBarcodeRequest:
+      title: brandsByBarcodeRequest
+      required:
+        - action
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          example: info
+          default: info
+        action:
+          type: string
+          description: Action
+          example: getBrandsByBarcode
+          default: getBrandsByBarcode
+        params:
+          required:
+            - barcode
+          type: object
+          properties:
+            barcode:
+              type: integer
+              description: Part number
+              example: 8717613027363
+    brandsByBarcodeResponse:
+      title: brandsByBarcodeResponse
+      required:
+        - error
+        - result
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        result:
+          type: array
+          description: Request result
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                description: Part number
+                example: 5310-41430
+              brand:
+                type: string
+                description: Brand
+                example: INA
+              name:
+                type: string
+                description: Part name
+                example: Generator
+            example:
+              - code: DAN016
+                brand: DENSO
+                name: Generator
+    partInfoRequest:
+      title: partInfoRequest
+      required:
+        - action
+        - param
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: info
+        action:
+          type: string
+          description: Action
+          default: getPartInfo
+        param:
+          required:
+            - brand
+            - code
+          type: object
+          properties:
+            code:
+              type: string
+              description: Part number
+              example: 5310-41430
+            brand:
+              type: string
+              description: Part number
+              example: INA
+            lang:
+              type: string
+              description: The list of output languages, in order of priority.
+                If there is no information in the requested language, the response will contain the default language.
+              example: ru,en
+              enum:
+                - de
+                - en
+                - fr
+                - it
+                - es
+                - nl
+                - da
+                - sv
+                - no
+                - fi
+                - hu
+                - pt
+                - ru
+                - sk
+                - cs
+                - pl
+                - el
+                - ro
+                - tr
+                - hr
+                - sr
+                - zh
+                - bg
+                - lv
+                - lt
+                - et
+                - sl
+                - is
+              default: ru
+    partInfoResponse:
+      title: partInfoResponse
+      required:
+        - error
+        - result
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        result:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Part number in the service format
+              example: "531041430"
+            brand:
+              type: string
+              description: Brand in the service format
+              example: INA LUK
+            name:
+              type: string
+              description: Part name
+              example: Timing belt tension pulley
+            barCode:
+              type: string
+              description: Part barcode
+              example: "4005108198068"
+            prePacking:
+              type: integer
+              description: Quantity of the parts in a package. <strong>Deprecated</strong>
+            replaceCode:
+              type: string
+              description: Replacement part number. <strong>Deprecated</strong>
+            weight:
+              minimum: 0
+              type: integer
+              description: Part weight, in grams.
+              format: float
+            parameters:
+              type: array
+              description: Part parameters
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Parameter name
+                    example: Parameter name
+                  value:
+                    type: string
+                    description: Parameter value
+                    example: "60"
+            brandInfo:
+              type: object
+              properties:
+                key:
+                  type: string
+                  description: Brand ID
+                  example: INA
+                name:
+                  type: string
+                  description: Brand name
+                  example: INA Factory
+                site:
+                  type: string
+                  description: URl to the brand website
+                  example: http://www.schaeffler-aftermarket.de
+                additional:
+                  type: array
+                  description: Additional info about the brand
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Additional info name
+                      value:
+                        type: string
+                        description: Value of the additional info
+                        example: ""
+              description: Brand info
+            apply:
+              type: array
+              description: Applicability
+              items:
+                type: object
+                properties:
+                  brand:
+                    type: string
+                    description: Make
+                    example: OPEL
+                  model:
+                    type: string
+                    description: Model
+                    example: COMBO Box Body / Estate (X12)
+                  modif:
+                    type: string
+                    description: Type
+                    example: OPEL COMBO Box Body / Estate (X12) 1.4 CNG
+                  dateFrom:
+                    type: integer
+                    description: Starting date of car manufacturing
+                    format: unixtime
+                    example: 1328054400
+                  dateTo:
+                    type: integer
+                    description: Ending date of car manufacturing. It can be null
+                    format: unixtime
+                    nullable: true
+                  kw:
+                    type: integer
+                    description: Power (kW)
+                    example: 88
+                  hp:
+                    type: integer
+                    description: Power (Horse power)
+                    example: 120
+                  cc:
+                    type: integer
+                    description: Engine volume (cm3)
+                    example: 1368
+                  body:
+                    type: string
+                    description: Body type
+                    example: Van/Station wagon
+                    enum:
+                      - Hatchback
+                      - sedan
+                      - coupe
+                      - convertible
+                      - station wagon
+                      - van
+                      - off-road vehicle, closed
+                      - pickup
+                      - with flat body/undercarriage
+                      - bus
+                      - van/station wagon
+                      - special body
+                      - targa
+                      - Off-road vehicle, open
+                      - dump truck
+                      - closed
+                      - Utility task vehicle
+                      - tow truck
+                      - Single-axle tractor
+                      - Platform/chassis truck
+                      - Truck tractor
+                      - Dump truck
+                      - Agitator truck
+                      - Van/Station wagon
+                      - Tractor
+                  engCode:
+                    type: string
+                    description: Engine code
+                    example: A 14 FC
+            originalReplaces:
+              type: array
+              description: OEM replacements
+              items:
+                type: object
+                properties:
+                  brand:
+                    type: string
+                    description: Replacement brand
+                    example: FIAT
+                  codes:
+                    type: array
+                    description: Replacement part numbers
+                    example:
+                      - "46403679"
+                      - "73503128"
+                      - "46817666"
+                      - "55248394"
+                      - 04892695AB
+                    items:
+                      type: string
+            partsInSet:
+              type: array
+              description: The auto part is a piece of a unit
+              items:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Part number
+                    example: "46403679"
+                  brand:
+                    type: string
+                    description: Part brand
+                    example: FIAT
+                  name:
+                    type: string
+                    description: Part name
+                    example: Bolt
+            images:
+              type: array
+              description: Part image
+              items:
+                type: string
+                example: http://img-service.tradesoft.ru/95a/95a3eb5b6464ff7c2ce01f6d66a62fd2.jpg
+          description: Request result. It can be null in case of no result
+          nullable: true
+    sendSmsRequest:
+      title: sendSmsRequest
+      required:
+        - action
+        - param
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: messenger
+        action:
+          type: string
+          description: Action
+          default: sendSms
+        param:
+          required:
+            - phoneNumber
+            - text
+          type: object
+          properties:
+            phoneNumber:
+              type: string
+              description: Phone number in the international format
+              example: "+79991114444"
+            text:
+              type: string
+              description: SMS text
+              example: Order
+    sendSmsResponse:
+      title: sendSmsResponse
+      required:
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        result:
+          type: object
+          properties:
+            smsId:
+              type: string
+              description: SMS ID
+              example: 58e7a1b05c8af2f8008b4568
+            sender:
+              type: string
+              description: The name of the sender who sent a message
+              example: TEST
+            phoneNumber:
+              type: integer
+              description: Phone number
+              example: 79991114444
+            segments:
+              type: integer
+              description: Quantity of SMS used on sending a message
+              example: 3
+            error:
+              type: string
+              description: The error occurred when sending a message
+          description: Request result
+    smsStatusRequest:
+      title: smsStatusRequest
+      required:
+        - action
+        - param
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: messenger
+        action:
+          type: string
+          description: Action
+          default: getSmsStatus
+        param:
+          type: array
+          items:
+            type: string
+            description: SMS ID
+            example: 58e7a1b05c8af2f8008b4568
+    smsStatusResponse:
+      title: smsStatusResponse
+      required:
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        result:
+          type: array
+          description: Request result
+          items:
+            type: object
+            properties:
+              smsId:
+                type: string
+                description: SMS ID
+                example: 58e7a1b05c8af2f8008b4568
+              status:
+                type: string
+                description: SMS status
+                example: created
+                enum:
+                  - created
+                  - error
+                  - in_progress
+                  - sended
+                  - send_checked
+                  - done
+              sender:
+                type: string
+                description: The name of the sender who sent a message
+                example: TEST
+              segments:
+                type: integer
+                description: Quantity of SMS used on sending the message
+                example: 3
+              error:
+                type: string
+                description: The error occurred when sending a message
+    smsBalanceRequest:
+      title: smsBalanceRequest
+      required:
+        - action
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: messenger
+        action:
+          type: string
+          description: Action
+          default: getSmsBalance
+    smsBalanceResponse:
+      title: smsBalanceResponse
+      required:
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        result:
+          type: object
+          properties:
+            balance:
+              type: integer
+              description: SMS balance
+              example: 500
+          description: Request result
+    smsBalance2Request:
+      title: smsBalance2Request
+      required:
+        - action
+        - password
+        - service
+        - user
+      type: object
+      properties:
+        user:
+          type: string
+          description: Login on TradeSoft website
+        password:
+          type: string
+          description: Password
+          format: password
+        service:
+          type: string
+          description: Service
+          default: messenger
+        action:
+          type: string
+          description: Action
+          default: getSmsBalance2
+    smsBalance2Response:
+      title: sendSmsResponse
+      required:
+        - error
+        - time
+      type: object
+      properties:
+        error:
+          type: string
+          description: Request error
+        time:
+          $ref: '#/components/schemas/time'
+        result:
+          type: array
+          description: Request result
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: ID of the service with the available balance
+                example: www_sms
+                enum:
+                  - www_sms
+                  - www_sms_by
+                  - www_sms_kz
+                  - www_sms_ua
+                  - www_sms_ke
+              name:
+                type: string
+                description: Service package name
+                example: SMS package (RU)
+              balance:
+                type: integer
+                description: Balance of SMS
+                example: 500

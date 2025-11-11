@@ -1,0 +1,44 @@
+# Tradesoft API Client for Go
+
+Это клиент для работы с API сервиса Tradesoft, реализованный на языке Go.
+
+## Описание
+
+Библиотека предоставляет удобный интерфейс для взаимодействия с API Tradesoft, включая методы для работы с поставщиками, информацией о деталях, аналогами и SMS-уведомлениями.
+
+## Структура пакетов
+
+- `provider` - работа с поставщиками
+- `info` - информация о деталях
+- `analog` - поиск аналогов
+- `messenger` - отправка SMS-сообщений
+- `common` - общие типы данных
+
+## Установка
+
+```bash
+go get github.com/yourusername/go_tradesoft
+```
+
+## Использование
+
+```go
+import "github.com/yourusername/go_tradesoft"
+
+client := tradesoft.NewClient("https://api.tradesoft.ru/3")
+client.SetAuth("username", "password")
+
+// Пример вызова метода получения списка поставщиков
+providers, err := client.Provider().GetProviderList("username", "password")
+if err != nil {
+    // обработка ошибки
+}
+```
+
+## Документация
+
+Документация по API доступна на сайте: https://service.tradesoft.ru/3/docs
+
+## Лицензия
+
+MIT
