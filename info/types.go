@@ -76,3 +76,66 @@ type PartInSet struct {
 	Brand string `json:"brand"`
 	Name  string `json:"name"`
 }
+
+// PartInfoResponse represents the response for part info request
+type PartInfoResponse struct {
+	Result *PartInfoResult `json:"result,omitempty"`
+	Error  *string         `json:"error,omitempty"`
+}
+
+// PartInfoRequest represents the request for part info
+type PartInfoRequest struct {
+	User     string        `json:"user"`
+	Password string        `json:"password"`
+	Service  string        `json:"service"`
+	Action   string        `json:"action"`
+	Param    PartInfoParam `json:"param"`
+}
+
+// PartInfoParam represents parameters for part info request
+type PartInfoParam struct {
+	Code  string `json:"code"`
+	Brand string `json:"brand"`
+	Lang  string `json:"lang"`
+}
+
+// BrandsByArticleResponse represents the response for brands by article request
+type BrandsByArticleResponse struct {
+	Result []BrandByArticle `json:"result,omitempty"`
+	Error  *string          `json:"error,omitempty"`
+}
+
+// BrandsByArticleRequest represents the request for brands by article
+type BrandsByArticleRequest struct {
+	User     string               `json:"user"`
+	Password string               `json:"password"`
+	Service  string               `json:"service"`
+	Action   string               `json:"action"`
+	Param    BrandsByArticleParam `json:"param"`
+}
+
+// BrandsByArticleParam represents parameters for brands by article request
+type BrandsByArticleParam struct {
+	Code string `json:"code"`
+	Lang string `json:"lang"`
+}
+
+// BrandsByBarcodeResponse represents the response for brands by barcode request
+type BrandsByBarcodeResponse struct {
+	Result []BrandByBarcode `json:"result,omitempty"`
+	Error  *string          `json:"error,omitempty"`
+}
+
+// BrandsByBarcodeRequest represents the request for brands by barcode
+type BrandsByBarcodeRequest struct {
+	User     string                `json:"user"`
+	Password string                `json:"password"`
+	Service  string                `json:"service"`
+	Action   string                `json:"action"`
+	Params   BrandsByBarcodeParams `json:"params"`
+}
+
+// BrandsByBarcodeParams represents parameters for brands by barcode request
+type BrandsByBarcodeParams struct {
+	Barcode int64 `json:"barcode"`
+}

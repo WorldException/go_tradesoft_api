@@ -132,7 +132,7 @@ func (s *Service) GetPriceList(user, password string, providerID common.Provider
 // - providerCode: Код детали на сайте поставщика (может быть получен методом getPriceList)
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
-func (s *Service) GetAdditionalPartInfo(user, password string, providerID common.ProviderID, providerCode ProviderCode, login, pwd string) (*AdditionalPartInfoResponse, error) {
+func (s *Service) GetAdditionalPartInfo(user, password string, providerID common.ProviderID, providerCode common.ProviderCode, login, pwd string) (*AdditionalPartInfoResponse, error) {
 	request := AdditionalPartInfoRequest{
 		User:     user,
 		Password: password,
@@ -261,7 +261,7 @@ func (s *Service) GetProviderList(user, password string) (*ProviderListResponse,
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
 // - itemHash: Хэш позиции (может быть получен методом getPriceList)
-func (s *Service) PreOrderSearch(user, password string, providerID common.ProviderID, code, producer, login, pwd string, itemHash ItemHash) (*PreOrderSearchResponse, error) {
+func (s *Service) PreOrderSearch(user, password string, providerID common.ProviderID, code, producer, login, pwd string, itemHash common.ItemHash) (*PreOrderSearchResponse, error) {
 	request := PreOrderSearchRequest{
 		User:      user,
 		Password:  password,
