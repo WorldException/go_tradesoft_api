@@ -17,19 +17,18 @@
 ## Установка
 
 ```bash
-go get github.com/yourusername/go_tradesoft
+go get github.com/WorldException/go_tradesoft_api
 ```
 
 ## Использование
 
 ```go
-import "github.com/yourusername/go_tradesoft"
+import "github.com/WorldException/go_tradesoft_api"
 
-client := tradesoft.NewClient("https://api.tradesoft.ru/3")
-client.SetAuth("username", "password")
+client := tradesoft.NewClient("https://api.tradesoft.ru/3", "username", "password")
 
 // Пример вызова метода получения списка поставщиков
-providers, err := client.Provider().GetProviderList("username", "password")
+providers, err := client.Provider().GetProviderList()
 if err != nil {
     // обработка ошибки
 }
