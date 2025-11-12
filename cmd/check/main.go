@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -10,10 +11,13 @@ import (
 
 func main() {
 	// Создание флагов
-	var username = flag.String("u", "", "Имя пользователя")
-	var password = flag.String("p", "", "Пароль")
+	var username = flag.String("u", "", "Имя пользователя tradesoft")
+	var password = flag.String("p", "", "Пароль tradesoft")
 	var article = flag.String("a", "", "Артикул")
 	var brand = flag.String("b", "", "Бренд")
+	var serviceName = flag.String("sname", "", "имя сервиса")
+	var serviceUser = flag.String("suser", "", "Пользователь сервиса")
+	var servicePassword = flag.String("spass", "", "Пароль сервиса")
 
 	// Парсинг флагов
 	flag.Parse()
@@ -21,6 +25,10 @@ func main() {
 	// Проверка обязательных параметров
 	if *username == "" || *password == "" {
 		log.Fatal("Необходимо указать имя пользователя и пароль с помощью флагов -u и -p")
+	}
+
+	if *serviceUser == "" || *servicePassword == "" || *serviceName == "" {
+		log.Fatal("Необходимо указать параметры учетной записи сервиса")
 	}
 
 	// Создание клиента
@@ -34,14 +42,21 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Поставщики: %+v\n", providers)
+	for i, item := range providers.Data {
+		fmt.Printf("Поставщик %d, Name: %s, Active: %v\n", i, item.Name, item.Active)
+	}
+	if len(providers.Data) == 0 {
+		fmt.Printf("Поставщики: %#v\n", providers)
+	}
 
 	// Пример вызова метода получения информации о детали
 	partInfo, err := client.Info().GetPartInfo(*username, *password, *article, *brand, "ru")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Информация о детали: %+v\n", partInfo)
+	fmt.Printf("Информация о детали: %#v\n", partInfo)
+	partJson, err := json.MarshalIndent(partInfo, "", "  ")
+	println(string(partJson))
 
 	// Пример вызова метода получения аналогов
 	analogInfo, err := client.Analog().GetAnalogs(*username, *password, *article, *brand, "ru", 3)
@@ -49,6 +64,10 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Аналоги: %+v\n", analogInfo)
+	//for i, item := range analogInfo.Data {
+	//}
+	ai, err := json.MarshalIndent(analogInfo, "", "  ")
+	println(string(ai))
 
 	// Пример вызова метода отправки SMS
 	// smsResult, err := client.Messenger().SendSMS(*username, *password, "+79991114444", "Тестовое сообщение")

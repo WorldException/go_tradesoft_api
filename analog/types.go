@@ -11,11 +11,18 @@ type AnalogsRequest struct {
 	Data     [][]string `json:"data"`
 }
 
+type Analog struct {
+	Analogs [][]interface{} `json:"analogs"`
+	Brand   string          `json:"brand"`
+	Code    string          `json:"code"`
+}
+
 // AnalogsResponse represents response for analogs search
 type AnalogsResponse struct {
-	Error string      `json:"error"`
-	Time  float64     `json:"time"`
-	Data  interface{} `json:"data"` // This will be a map with article as key and brand info as value
+	Error string  `json:"error"`
+	Time  float64 `json:"time"`
+	//Data  interface{} `json:"data"` // This will be a map with article as key and brand info as value
+	Data map[string]map[string]Analog // code, producer, "analogs"
 }
 
 // AnalogsAdvRequest represents request for advanced analogs search

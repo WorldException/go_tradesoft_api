@@ -11,6 +11,10 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+var (
+	TradeSoftUrl = "https://service.tradesoft.ru/3"
+)
+
 // Client represents the Tradesoft API client
 type Client struct {
 	baseURL    string
@@ -36,7 +40,7 @@ func NewClient(baseURL string) *Client {
 }
 
 func NewClientDefault() *Client {
-	return NewClient("https://service.tradesoft.ru/3")
+	return NewClient(TradeSoftUrl)
 }
 
 func (c *Client) SetHttpClient(client *http.Client) {
@@ -48,7 +52,7 @@ func (c *Client) SetHttpClient(client *http.Client) {
 	c.messenger = messenger.NewService(restClient, c.baseURL)
 }
 
-// SetAuth sets authentication credentials for the client
+// Авторизация для доступа к трейдсофт
 func (c *Client) SetAuth(user, password string) {
 	c.httpClient.SetBasicAuth(user, password)
 }
