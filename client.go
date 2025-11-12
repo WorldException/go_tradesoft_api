@@ -1,8 +1,6 @@
 package go_tradesoft_api
 
 import (
-	"net/http"
-
 	"github.com/WorldException/go_tradesoft_api/analog"
 	"github.com/WorldException/go_tradesoft_api/info"
 	"github.com/WorldException/go_tradesoft_api/messenger"
@@ -17,12 +15,13 @@ var (
 
 // Client represents the Tradesoft API client
 type Client struct {
-	baseURL    string
-	httpClient *resty.Client
-	provider   *provider.Service
-	info       *info.Service
-	analog     *analog.Service
-	messenger  *messenger.Service
+	baseURL        string
+	httpClient     *resty.Client
+	provider       *provider.Service
+	info           *info.Service
+	analog         *analog.Service
+	messenger      *messenger.Service
+	traceEventFunc func(event TraceInfoEvent)
 }
 
 // NewClient creates a new instance of Tradesoft API client
@@ -39,18 +38,36 @@ func NewClient(baseURL string) *Client {
 	}
 }
 
+func (c *Client) TraceOff() {
+	c.httpClient.DisableTrace()
+}
+
+func (c *Client) TraceOn(event func(event TraceInfoEvent)) {
+	c.traceEventFunc = event
+	c.httpClient.OnSuccess(func(client *resty.Client, response *resty.Response) {
+		c.traceEventFunc(TraceInfoEvent{
+			TraceInfo:  response.Request.TraceInfo(),
+			Url:        response.Request.URL,
+			Method:     response.Request.Method,
+			BodySize:   response.Size(),
+			StatusCode: response.StatusCode(),
+		})
+	})
+	c.httpClient.EnableTrace()
+}
+
 func NewClientDefault() *Client {
 	return NewClient(TradeSoftUrl)
 }
 
-func (c *Client) SetHttpClient(client *http.Client) {
-	restClient := resty.NewWithClient(client)
-	c.httpClient = restClient
-	c.provider = provider.NewService(restClient, c.baseURL)
-	c.info = info.NewService(restClient, c.baseURL)
-	c.analog = analog.NewService(restClient, c.baseURL)
-	c.messenger = messenger.NewService(restClient, c.baseURL)
-}
+// func (c *Client) SetHttpClient(client *http.Client) {
+// 	restClient := resty.NewWithClient(client)
+// 	c.httpClient = restClient
+// 	c.provider = provider.NewService(restClient, c.baseURL)
+// 	c.info = info.NewService(restClient, c.baseURL)
+// 	c.analog = analog.NewService(restClient, c.baseURL)
+// 	c.messenger = messenger.NewService(restClient, c.baseURL)
+// }
 
 // Авторизация для доступа к трейдсофт
 func (c *Client) SetAuth(user, password string) {
