@@ -1,6 +1,8 @@
 package go_tradesoft_api
 
-import "github.com/go-resty/resty/v2"
+import (
+	"github.com/go-resty/resty/v2"
+)
 
 type TraceInfoEvent struct {
 	TraceInfo  resty.TraceInfo

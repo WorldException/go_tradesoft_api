@@ -9,29 +9,31 @@ import (
 
 // Service represents the Info service
 type Service struct {
-	client  *resty.Client
-	baseURL string
+	client     *resty.Client
+	baseURL    string
+	TsUser     string
+	TsPassword string
 }
 
 // NewService creates a new Info service client
-func NewService(client *resty.Client, baseURL string) *Service {
+func NewService(client *resty.Client, baseURL string, user, password string) *Service {
 	return &Service{
-		client:  client,
-		baseURL: baseURL,
+		client:     client,
+		baseURL:    baseURL,
+		TsUser:     user,
+		TsPassword: password,
 	}
 }
 
 // GetPartInfo gets part information
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - code: Номер детали
 // - brand: Производитель
 // - lang: Язык вывода (по умолчанию ru)
-func (s *Service) GetPartInfo(user, password string, code, brand, lang string) (*PartInfoResponse, error) {
+func (s *Service) GetPartInfo(code, brand, lang string) (*PartInfoResponse, error) {
 	request := PartInfoRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "info",
 		Action:   "getPartInfo",
 		Param: PartInfoParam{
@@ -66,14 +68,12 @@ func (s *Service) GetPartInfo(user, password string, code, brand, lang string) (
 
 // GetBrandsByArticle gets list of brands by part number
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - code: Номер детали
 // - lang: Язык вывода (по умолчанию ru)
-func (s *Service) GetBrandsByArticle(user, password string, code, lang string) (*BrandsByArticleResponse, error) {
+func (s *Service) GetBrandsByArticle(code, lang string) (*BrandsByArticleResponse, error) {
 	request := BrandsByArticleRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "info",
 		Action:   "getBrandsByArticle",
 		Param: BrandsByArticleParam{
@@ -107,13 +107,11 @@ func (s *Service) GetBrandsByArticle(user, password string, code, lang string) (
 
 // GetBrandsByBarcode gets list of brands by barcode
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - barcode: Штрих-код детали
-func (s *Service) GetBrandsByBarcode(user, password string, barcode int64) (*BrandsByBarcodeResponse, error) {
+func (s *Service) GetBrandsByBarcode(barcode int64) (*BrandsByBarcodeResponse, error) {
 	request := BrandsByBarcodeRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "info",
 		Action:   "getBrandsByBarcode",
 		Params: BrandsByBarcodeParams{

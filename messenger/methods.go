@@ -9,28 +9,30 @@ import (
 
 // Service represents the Messenger service
 type Service struct {
-	client  *resty.Client
-	baseURL string
+	client     *resty.Client
+	baseURL    string
+	TsUser     string
+	TsPassword string
 }
 
 // NewService creates a new Messenger service client
-func NewService(client *resty.Client, baseURL string) *Service {
+func NewService(client *resty.Client, baseURL string, user, password string) *Service {
 	return &Service{
-		client:  client,
-		baseURL: baseURL,
+		client:     client,
+		baseURL:    baseURL,
+		TsUser:     user,
+		TsPassword: password,
 	}
 }
 
 // SendSMS sends an SMS to a mobile number
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - phoneNumber: Номер телефона в международном формате
 // - text: Текст SMS
-func (s *Service) SendSMS(user, password string, phoneNumber, text string) (*SendSMSResponse, error) {
+func (s *Service) SendSMS(phoneNumber, text string) (*SendSMSResponse, error) {
 	request := SendSMSRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "messenger",
 		Action:   "sendSms",
 		Param: SMSParam{
@@ -64,13 +66,11 @@ func (s *Service) SendSMS(user, password string, phoneNumber, text string) (*Sen
 
 // GetSmsStatus gets information about sent SMS
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - smsIDs: Список ID SMS для проверки статуса
-func (s *Service) GetSmsStatus(user, password string, smsIDs []string) (*SMSStatusResponse, error) {
+func (s *Service) GetSmsStatus(smsIDs []string) (*SMSStatusResponse, error) {
 	request := SMSStatusRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "messenger",
 		Action:   "getSmsStatus",
 		Param:    smsIDs,
@@ -100,13 +100,10 @@ func (s *Service) GetSmsStatus(user, password string, smsIDs []string) (*SMSStat
 }
 
 // GetSmsBalance checks SMS balance (deprecated)
-// Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
-func (s *Service) GetSmsBalance(user, password string) (*SMSBalanceResponse, error) {
+func (s *Service) GetSmsBalance() (*SMSBalanceResponse, error) {
 	request := SMSBalanceRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "messenger",
 		Action:   "getSmsBalance",
 	}
@@ -135,13 +132,10 @@ func (s *Service) GetSmsBalance(user, password string) (*SMSBalanceResponse, err
 }
 
 // GetSmsBalance2 checks SMS balance (new version)
-// Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
-func (s *Service) GetSmsBalance2(user, password string) (*SMSBalance2Response, error) {
+func (s *Service) GetSmsBalance2() (*SMSBalance2Response, error) {
 	request := SMSBalance2Request{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "messenger",
 		Action:   "getSmsBalance2",
 	}

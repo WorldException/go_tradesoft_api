@@ -11,15 +11,21 @@ import (
 
 // Service represents the Provider service
 type Service struct {
-	client  *resty.Client
-	baseURL string
+	client     *resty.Client
+	baseURL    string
+	TsUser     string
+	TsPassword string
 }
 
 // NewService creates a new Provider service client
-func NewService(client *resty.Client, baseURL string) *Service {
+// - user: Логин на сайте TradeSoft
+// - password: Пароль на сайте TradeSoft
+func NewService(client *resty.Client, baseURL string, user, password string) *Service {
 	return &Service{
-		client:  client,
-		baseURL: baseURL,
+		client:     client,
+		baseURL:    baseURL,
+		TsUser:     user,
+		TsPassword: password,
 	}
 }
 
@@ -32,10 +38,10 @@ func NewService(client *resty.Client, baseURL string) *Service {
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
 // - options: Опциональные параметры поиска (если доступны)
-func (s *Service) GetProducerList(user, password string, providerID common.ProviderID, code, login, pwd string, options common.Options) (*ProducerListResponse, error) {
+func (s *Service) GetProducerList(code string, providerID common.ProviderID, login, pwd string, options common.Options) (*ProducerListResponse, error) {
 	request := ProducerListRequest{
-		User:      user,
-		Password:  password,
+		User:      s.TsUser,
+		Password:  s.TsPassword,
 		Service:   "provider",
 		Action:    "getProducerList",
 		Timelimit: 10,
@@ -75,18 +81,16 @@ func (s *Service) GetProducerList(user, password string, providerID common.Provi
 
 // GetPriceList gets list of offers by manufacturers
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - providerID: ID поставщика
 // - code: Номер детали
 // - producer: Производитель
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
 // - options: Опциональные параметры поиска
-func (s *Service) GetPriceList(user, password string, providerID common.ProviderID, code, producer, login, pwd string, options common.Options) (*PriceListResponse, error) {
+func (s *Service) GetPriceList(code, producer string, providerID common.ProviderID, login, pwd string, options common.Options) (*PriceListResponse, error) {
 	request := PriceListRequest{
-		User:      user,
-		Password:  password,
+		User:      s.TsUser,
+		Password:  s.TsPassword,
 		Service:   "provider",
 		Action:    "getPriceList",
 		Timelimit: 10,
@@ -127,16 +131,14 @@ func (s *Service) GetPriceList(user, password string, providerID common.Provider
 
 // GetAdditionalPartInfo gets additional information about part
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - providerID: ID поставщика
 // - providerCode: Код детали на сайте поставщика (может быть получен методом getPriceList)
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
-func (s *Service) GetAdditionalPartInfo(user, password string, providerID common.ProviderID, providerCode common.ProviderCode, login, pwd string) (*AdditionalPartInfoResponse, error) {
+func (s *Service) GetAdditionalPartInfo(providerCode common.ProviderCode, providerID common.ProviderID, login, pwd string) (*AdditionalPartInfoResponse, error) {
 	request := AdditionalPartInfoRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "provider",
 		Action:   "getAdditionalPartInfo",
 		Container: []AdditionalPartInfoItem{
@@ -174,15 +176,13 @@ func (s *Service) GetAdditionalPartInfo(user, password string, providerID common
 
 // GetOptionsList gets list of suppliers' options
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - providerID: ID поставщика
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
-func (s *Service) GetOptionsList(user, password string, providerID common.ProviderID, login, pwd string) (*OptionsListResponse, error) {
+func (s *Service) GetOptionsList(providerID common.ProviderID, login, pwd string) (*OptionsListResponse, error) {
 	request := OptionsListRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "provider",
 		Action:   "getOptionsList",
 		Container: []OptionsListItem{
@@ -218,13 +218,10 @@ func (s *Service) GetOptionsList(user, password string, providerID common.Provid
 }
 
 // GetProviderList gets list of available suppliers
-// Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
-func (s *Service) GetProviderList(user, password string) (*ProviderListResponse, error) {
+func (s *Service) GetProviderList() (*ProviderListResponse, error) {
 	request := ProviderListRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "provider",
 		Action:   "getProviderList",
 	}
@@ -254,18 +251,16 @@ func (s *Service) GetProviderList(user, password string) (*ProviderListResponse,
 
 // PreOrderSearch gets list of items for order
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - providerID: ID поставщика
 // - code: Номер детали
 // - producer: Производитель
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
 // - itemHash: Хэш позиции (может быть получен методом getPriceList)
-func (s *Service) PreOrderSearch(user, password string, providerID common.ProviderID, code, producer, login, pwd string, itemHash common.ItemHash) (*PreOrderSearchResponse, error) {
+func (s *Service) PreOrderSearch(code, producer string, providerID common.ProviderID, login, pwd string, itemHash common.ItemHash) (*PreOrderSearchResponse, error) {
 	request := PreOrderSearchRequest{
-		User:      user,
-		Password:  password,
+		User:      s.TsUser,
+		Password:  s.TsPassword,
 		Service:   "provider",
 		Action:    "preOrderSearch",
 		Timelimit: 10,
@@ -306,18 +301,16 @@ func (s *Service) PreOrderSearch(user, password string, providerID common.Provid
 
 // MakeOrderOffline places an order to a supplier
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - providerID: ID поставщика
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
 // - items: Список заказываемых позиций
 // - comment: Комментарий к заказу
 // - clientOrderNumber: Номер заказа клиента
-func (s *Service) MakeOrderOffline(user, password string, providerID common.ProviderID, login, pwd string, items []MakeOrderItem, comment, clientOrderNumber string) (*MakeOrderOfflineResponse, error) {
+func (s *Service) MakeOrderOffline(providerID common.ProviderID, login, pwd string, items []MakeOrderItem, comment, clientOrderNumber string) (*MakeOrderOfflineResponse, error) {
 	request := MakeOrderOfflineRequest{
-		User:      user,
-		Password:  password,
+		User:      s.TsUser,
+		Password:  s.TsPassword,
 		Service:   "provider",
 		Action:    "makeOrderOffline",
 		Timelimit: 10,
@@ -358,15 +351,13 @@ func (s *Service) MakeOrderOffline(user, password string, providerID common.Prov
 
 // GetStatusList gets list of available statuses
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - providerID: ID поставщика
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
-func (s *Service) GetStatusList(user, password string, providerID common.ProviderID, login, pwd string) (*StatusListResponse, error) {
+func (s *Service) GetStatusList(providerID common.ProviderID, login, pwd string) (*StatusListResponse, error) {
 	request := StatusListRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "provider",
 		Action:   "getStatusList",
 		Container: []StatusListItem{
@@ -403,16 +394,14 @@ func (s *Service) GetStatusList(user, password string, providerID common.Provide
 
 // GetItemsStatus gets statuses of ordered items
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - providerID: ID поставщика
 // - login: Логин на сайте поставщика
 // - password: Пароль на сайте поставщика
 // - items: Список ID заказанных позиций
-func (s *Service) GetItemsStatus(user, password string, providerID common.ProviderID, login, pwd string, items []common.OrderItemID) (*ItemsStatusResponse, error) {
+func (s *Service) GetItemsStatus(providerID common.ProviderID, login, pwd string, items []common.OrderItemID) (*ItemsStatusResponse, error) {
 	request := ItemsStatusRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "provider",
 		Action:   "getItemsStatus",
 		Container: []ItemsStatusItem{

@@ -32,13 +32,10 @@ func main() {
 	}
 
 	// Создание клиента
-	client := go_tradesoft_api.NewClientDefault()
-
-	// Установка аутентификации
-	client.SetAuth(*username, *password)
+	client := go_tradesoft_api.NewClientDefault(*username, *password)
 
 	// Пример вызова метода получения списка поставщиков
-	providers, err := client.Provider().GetProviderList(*username, *password)
+	providers, err := client.Provider().GetProviderList()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,7 +47,7 @@ func main() {
 	}
 
 	// Пример вызова метода получения информации о детали
-	partInfo, err := client.Info().GetPartInfo(*username, *password, *article, *brand, "ru")
+	partInfo, err := client.Info().GetPartInfo(*article, *brand, "ru")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +56,7 @@ func main() {
 	println(string(partJson))
 
 	// Пример вызова метода получения аналогов
-	analogInfo, err := client.Analog().GetAnalogs(*username, *password, *article, *brand, "ru", 3)
+	analogInfo, err := client.Analog().GetAnalogs(*article, *brand, "ru", 3)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -9,30 +9,32 @@ import (
 
 // Service represents the Analog service
 type Service struct {
-	client  *resty.Client
-	baseURL string
+	client     *resty.Client
+	baseURL    string
+	TsUser     string
+	TsPassword string
 }
 
 // NewService creates a new Analog service client
-func NewService(client *resty.Client, baseURL string) *Service {
+func NewService(client *resty.Client, baseURL string, user, password string) *Service {
 	return &Service{
-		client:  client,
-		baseURL: baseURL,
+		client:     client,
+		baseURL:    baseURL,
+		TsUser:     user,
+		TsPassword: password,
 	}
 }
 
 // GetAnalogs gets list of interchanges by part number and brand
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - code: Номер детали
 // - brand: Производитель
 // - rating: Минимальный рейтинг для отображения замены (от 1 до 5)
 // - lang: Язык вывода (по умолчанию ru)
-func (s *Service) GetAnalogs(user, password string, code, brand, lang string, rating int) (*AnalogsResponse, error) {
+func (s *Service) GetAnalogs(code, brand, lang string, rating int) (*AnalogsResponse, error) {
 	request := AnalogsRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "analog",
 		Action:   "getAnalogs",
 		Rating:   rating,
@@ -67,15 +69,13 @@ func (s *Service) GetAnalogs(user, password string, code, brand, lang string, ra
 
 // GetAnalogsAdv gets list of interchanges by part number and brand (advanced version)
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - data: Список строк в формате "код:бренд"
 // - rating: Минимальный рейтинг для отображения замены (от 1 до 5)
 // - lang: Язык вывода (по умолчанию ru)
-func (s *Service) GetAnalogsAdv(user, password string, data []string, lang string, rating int) (*AnalogsAdvResponse, error) {
+func (s *Service) GetAnalogsAdv(data []string, lang string, rating int) (*AnalogsAdvResponse, error) {
 	request := AnalogsAdvRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "analog",
 		Action:   "getAnalogsAdv",
 		Rating:   rating,
@@ -108,14 +108,12 @@ func (s *Service) GetAnalogsAdv(user, password string, data []string, lang strin
 
 // GetProducersAdv gets list of available manufacturers by part number (advanced version)
 // Параметры:
-// - user: Логин на сайте TradeSoft
-// - password: Пароль на сайте TradeSoft
 // - data: Список номеров деталей
 // - rating: Минимальный рейтинг для отображения замены (от 1 до 5)
-func (s *Service) GetProducersAdv(user, password string, data []string, rating int) (*ProducersAdvResponse, error) {
+func (s *Service) GetProducersAdv(data []string, rating int) (*ProducersAdvResponse, error) {
 	request := ProducersAdvRequest{
-		User:     user,
-		Password: password,
+		User:     s.TsUser,
+		Password: s.TsPassword,
 		Service:  "analog",
 		Action:   "getProducersAdv",
 		Rating:   rating,

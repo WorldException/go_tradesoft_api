@@ -22,20 +22,26 @@ type Client struct {
 	analog         *analog.Service
 	messenger      *messenger.Service
 	traceEventFunc func(event TraceInfoEvent)
+	TsUser         string
+	TsPassword     string
 }
 
 // NewClient creates a new instance of Tradesoft API client
-func NewClient(baseURL string) *Client {
+func NewClient(baseURL string, user, password string) *Client {
 	httpClient := resty.New()
 
-	return &Client{
+	client := Client{
 		baseURL:    baseURL,
 		httpClient: httpClient,
-		provider:   provider.NewService(httpClient, baseURL),
-		info:       info.NewService(httpClient, baseURL),
-		analog:     analog.NewService(httpClient, baseURL),
-		messenger:  messenger.NewService(httpClient, baseURL),
+		TsUser:     user,
+		TsPassword: password,
+		provider:   provider.NewService(httpClient, baseURL, user, password),
+		info:       info.NewService(httpClient, baseURL, user, password),
+		analog:     analog.NewService(httpClient, baseURL, user, password),
+		messenger:  messenger.NewService(httpClient, baseURL, user, password),
 	}
+	client.httpClient.SetBasicAuth(user, password)
+	return &client
 }
 
 func (c *Client) TraceOff() {
@@ -56,22 +62,8 @@ func (c *Client) TraceOn(event func(event TraceInfoEvent)) {
 	c.httpClient.EnableTrace()
 }
 
-func NewClientDefault() *Client {
-	return NewClient(TradeSoftUrl)
-}
-
-// func (c *Client) SetHttpClient(client *http.Client) {
-// 	restClient := resty.NewWithClient(client)
-// 	c.httpClient = restClient
-// 	c.provider = provider.NewService(restClient, c.baseURL)
-// 	c.info = info.NewService(restClient, c.baseURL)
-// 	c.analog = analog.NewService(restClient, c.baseURL)
-// 	c.messenger = messenger.NewService(restClient, c.baseURL)
-// }
-
-// Авторизация для доступа к трейдсофт
-func (c *Client) SetAuth(user, password string) {
-	c.httpClient.SetBasicAuth(user, password)
+func NewClientDefault(user, password string) *Client {
+	return NewClient(TradeSoftUrl, user, password)
 }
 
 // Provider returns a provider service client
