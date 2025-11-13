@@ -1,6 +1,9 @@
 package provider
 
 import (
+	"log"
+	"strconv"
+
 	"github.com/WorldException/go_tradesoft_api/common"
 )
 
@@ -95,7 +98,7 @@ type PriceListData struct {
 	Updated           int64               `json:"updated"`
 	MinQuantity       int                 `json:"minquantity"`
 	Amount            int                 `json:"amount"`
-	ProviderRating    int                 `json:"provider_rating"`
+	ProviderRating    string              `json:"provider_rating"`
 	WarProviderRating int                 `json:"war_provider_rating"`
 	ProviderCode      common.ProviderCode `json:"providercode"`
 	Weight            float64             `json:"weight"`
@@ -109,6 +112,18 @@ type PriceListData struct {
 	IsDealer          bool                `json:"isDealer"`
 	IsUsed            bool                `json:"isUsed"`
 	Image             string              `json:"image"`
+}
+
+func (p *PriceListData) ProviderRatingF() float64 {
+	if p.ProviderRating == "" {
+		return 0
+	}
+	f, err := strconv.ParseFloat(p.ProviderRating, 64)
+	if err != nil {
+		log.Printf("Bad float value: %s", p.ProviderRating)
+		return 0
+	}
+	return f
 }
 
 // AdditionalPartInfoRequest represents request for additional part info
