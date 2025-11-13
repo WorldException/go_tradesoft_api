@@ -55,9 +55,9 @@ func main() {
 			log.Fatal(err)
 		}
 		for _, price := range prices.Container {
-			fmt.Printf("Price: %s", price.Provider)
+			fmt.Printf("Price: %s\n", price.Provider)
 			for _, item := range price.Data {
-				fmt.Printf("item %s: %d, %d", item.Code, item.Amount, item.Price)
+				fmt.Printf("item %s: %d, %f\n", item.Code, item.Amount, item.Price)
 			}
 		}
 	}
