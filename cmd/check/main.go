@@ -47,21 +47,6 @@ func main() {
 		fmt.Printf("Поставщики: %#v\n", providers)
 	}
 
-	if article != nil && brand != nil {
-		opt := make(common.Options)
-		opt["analogs"] = "Y"
-		prices, err := client.Provider().GetPriceList(*article, *brand, common.ProviderID(*serviceName), *serviceUser, *servicePassword, opt)
-		if err != nil {
-			log.Fatal(err)
-		}
-		for _, price := range prices.Container {
-			fmt.Printf("Price: %s\n", price.Provider)
-			for _, item := range price.Data {
-				fmt.Printf("item %s: %d, %f\n", item.Code, item.Amount, item.Price)
-			}
-		}
-	}
-
 	// Пример вызова метода получения информации о детали
 	partInfo, err := client.Info().GetPartInfo(*article, *brand, "ru")
 	if err != nil {
@@ -81,6 +66,25 @@ func main() {
 	//}
 	ai, err := json.MarshalIndent(analogInfo, "", "  ")
 	println(string(ai))
+
+	// find items
+	if article != nil && brand != nil {
+		opt := make(common.Options)
+		opt["analogs"] = "Y"
+		prices, err := client.Provider().GetPriceList(*article, *brand, common.ProviderID(*serviceName), *serviceUser, *servicePassword, opt)
+		if err != nil {
+			log.Fatal(err)
+		}
+		cnt := 0
+		for _, price := range prices.Container {
+			fmt.Printf("Price: %s\n", price.Provider)
+			for _, item := range price.Data {
+				fmt.Printf("item %s: %d, %f\n", item.Code, item.Amount, item.Price)
+				cnt = cnt + 1
+			}
+		}
+		fmt.Printf("Find items prices:%d, items:%d", len(prices.Container), cnt)
+	}
 
 	// Пример вызова метода отправки SMS
 	// smsResult, err := client.Messenger().SendSMS(*username, *password, "+79991114444", "Тестовое сообщение")
